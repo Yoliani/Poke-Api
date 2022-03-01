@@ -1,7 +1,5 @@
 class Api::Pokemon::PokemonController < ApplicationController
-  @all_pokemons_validate = 0
   def index
-    # require 'pry'; binding.pry
     if params['query'] != '' and !params['query'].nil? and Pokedex.count != 0
       query(params[:query])
     elsif params['limit'] == '' or params['limit'].to_i > 0 and Pokedex.count != 0
@@ -41,7 +39,7 @@ class Api::Pokemon::PokemonController < ApplicationController
       end
       # next if Pokedex.find_by(id: json_pokemon[:id])
 
-      poke = Pokedex.create(id_pokemon: json_pokemon[:id]  , name:  json_pokemon[:name],
+      poke = Pokedex.create(id_pokemon: json_pokemon[:id], name:  json_pokemon[:name],
                             description: 'Raises the likelihood of meeting wild Pokémon', types: array_types,
                             image_url: json_pokemon[:sprites][:other][:dream_world][:front_default])
 
@@ -63,14 +61,14 @@ class Api::Pokemon::PokemonController < ApplicationController
   end
 
   def show_one
-    prueba = Pokedex.find_by(name: params[:id])
-    prueba = delete_key(prueba)
-    if prueba
+    encontrado = Pokedex.find_by(name: params[:id])
+    if encontrado
+      encontrado= delete_key(encontrado)
       render json: prueba
     elsif Pokedex.find_by(id_pokemon: params[:id])
-      prueba = Pokedex.find_by(id: params[:id])
-      prueba = delete_key(prueba)
-      render json: prueba
+      encontrado = Pokedex.find_by(id_pokemon:  params[:id])
+      encontrado = delete_key(encontrado)
+      render json: encontrado
     end
   end
 
@@ -104,14 +102,13 @@ class Api::Pokemon::PokemonController < ApplicationController
 
   def delete_key(json)
     json_poke = JSON.parse(json.to_json)
-    require 'pry'
-    binding.pry
-     json_poke.delete('id_pokemon')
+    
+    json_poke.delete("id_pokemon")
     json_poke['poke_stat'].each do |stat_p|
-      stat_p.delete('id')
-      stat_p.delete('pokedex_id')
+      stat_p.delete("id")
+      stat_p.delete("pokedex_id")
     end
 
-    json
+    json_poke
   end
 end
