@@ -64,7 +64,7 @@ class Api::Pokemon::PokemonController < ApplicationController
     encontrado = Pokedex.find_by(name: params[:id])
     if encontrado
       encontrado= delete_key(encontrado)
-      render json: prueba
+      render json: encontrado 
     elsif Pokedex.find_by(id_pokemon: params[:id])
       encontrado = Pokedex.find_by(id_pokemon:  params[:id])
       encontrado = delete_key(encontrado)
